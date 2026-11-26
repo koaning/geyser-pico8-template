@@ -100,7 +100,7 @@ A workflow in this repo runs `copier copy . /tmp/demo --defaults` and then
 
 For each of mazing, cairns and mossballs:
 
-1. On a branch, run `copier copy gh:koaning/pico8-game-template . --overwrite`
+1. On a branch, run `copier copy gh:koaning/geyser-pico8-template . --overwrite`
    (with `game=<name>`). This writes `.copier-answers.yml`.
 2. Resolve the diff by hand. Port game-specific needs back into the template
    core (e.g. whatever API mossballs' AI or cairns' `tools/genlevels.lua`
@@ -116,3 +116,20 @@ to mazing), then mossballs (biggest drift).
   Lua package instead of copied files? Copier is simpler for now.
 - Is a plain GitHub template (no updates) still worth offering next to copier?
   It costs nothing, but games made that way will drift again.
+
+## Sibling: geyser-love2d-template
+
+A LÖVE template will live next to this one. To keep the two consistent:
+
+- Same conventions: `make test` as the one CI entry point, `make serve` for the
+  browser build via love.js, `make screenshots` for the README images,
+  AGENTS.md describing the workflow, and copier for create and update.
+- Candidates to share rather than copy: `tools/serve.py`,
+  `site/coi-serviceworker.js`, the love.js fetch and site steps, and the
+  Pages workflow. For now both templates carry their own copies; if they
+  drift, move them into a shared `geyser-common` copier template (copier
+  supports applying several templates to one project, each with its own
+  answers file).
+- The pico8 preview player is a LÖVE program already, so the love2d template
+  can reuse its packaging, love.js and screenshot code.
+- Name things the same way in both (`GAME`, `dist/$(GAME).love`, `site/`).
