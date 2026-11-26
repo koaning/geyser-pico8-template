@@ -1,0 +1,29 @@
+# {{ title }}
+
+{{ description }}
+
+A PICO-8 game. The cart is `pico8/{{ game }}.p8`; its code is in the
+`#include`d `pico8/*.lua` files.
+
+## Play
+
+```sh
+make pico8          # in PICO-8 (needs PICO-8 installed)
+make fetch-lovejs   # once: download the love.js runtime
+make serve          # in the browser, on the LÖVE preview player
+```
+
+Controls: arrow keys to walk, Z/C/N (🅾️) to start.
+
+## Develop
+
+```sh
+make test           # unit tests, cart smoke test, token budget, sound check
+make music          # compile tools/scores.lua into the cart
+make screenshots    # refresh docs/screenshots/ and the cart label (needs LÖVE)
+```
+
+The toolchain comes from
+[geyser-pico8-template](https://github.com/koaning/geyser-pico8-template);
+`copier update` pulls in its improvements. See AGENTS.md for how the pieces
+fit together.
