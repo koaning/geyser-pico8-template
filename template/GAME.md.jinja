@@ -1,0 +1,12 @@
+# {{ title }}
+
+{{ description }}
+
+Notes for agents about this game (the toolchain notes are in AGENTS.md).
+
+- Code: `pico8/rules.lua` holds the rules (pure logic, unit-tested in
+  `tests/test_rules.lua`), `pico8/main.lua` the scenes, input and drawing.
+- Sprites are the cart's `__gfx__` section: 1 you, 2 gem, 3 wall.
+- Sound: `tools/scores.lua`, sfx 0 step, 1 gem, 2 bump; the song is
+  `music(0)`.
+- Save data: `cartdata("{{ cartdata_id }}")`, slot 0 is the best score.

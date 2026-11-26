@@ -1,0 +1,51 @@
+_subdirectory: template
+_answers_file: .copier-answers.yml
+_min_copier_version: "9.0.0"
+
+# Files the game owns: generated once as a small working example, then never
+# touched by `copier update`.
+_skip_if_exists:
+  - game.mk
+  - GAME.md
+  - README.md
+  - "pico8/*.p8"
+  - pico8/main.lua
+  - pico8/rules.lua
+  - pico8/preview/shots.lua
+  - tests/cart_smoke.lua
+  - "tests/test_*.lua"
+  - tools/scores.lua
+  - "docs/screenshots/*"
+
+game:
+  type: str
+  help: Short lowercase name; the cart is pico8/<game>.p8
+  default: "{{ _folder_name | lower | replace('-', '_') | replace(' ', '_') }}"
+  validator: >-
+    {% if not (game | regex_search('^[a-z][a-z0-9_]*$')) %}
+    use lowercase letters, digits and _ (start with a letter)
+    {% endif %}
+
+title:
+  type: str
+  help: Title shown on the title screen, the cart and the web page
+  default: "{{ game | replace('_', ' ') | title }}"
+
+description:
+  type: str
+  help: One line about the game (goes on the cart's byline)
+  default: grab the gems
+
+author:
+  type: str
+  help: Your name or handle (goes on the cart's byline)
+  default: koaning
+
+cartdata_id:
+  type: str
+  help: cartdata() id for save data (unique across all PICO-8 carts)
+  default: "{{ author | lower | replace('-', '_') }}_{{ game }}"
+  validator: >-
+    {% if not (cartdata_id | regex_search('^[a-z0-9_]{1,64}$')) %}
+    use up to 64 lowercase letters, digits and _
+    {% endif %}

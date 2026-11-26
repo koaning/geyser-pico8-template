@@ -32,6 +32,34 @@ Each copy has since evolved on its own. Lines differing from mazing (as of
 The template is mainly meant to fix that drift (using `copier update`), not just
 to save time when starting a game.
 
+## Status (2026-11-26)
+
+Steps 1–4 are done, in this repo instead of in mazing first: the template was
+extracted from mazing's files and made name-agnostic while extracting.
+Step 5 (adopting it in the games) is next. Differences from the plan as
+written:
+
+- The game name lives in a game-owned `game.mk` (`GAME := mazing`) that the
+  shared Makefile `include`s. It also holds per-game hooks: `PREVIEW_EXTRA`
+  (e.g. `tools/solve.lua` for mazing's shots), `TEST_EXTRA` and extra targets
+  (e.g. cairns' level generator). The Lua tools take the cart from `$CART`
+  (exported by the Makefile) or the only `pico8/*.p8` (`tools/cart.lua`).
+- `site/index.html` has `@GAME@`/`@TITLE@` placeholders filled in by
+  `make site`; `make pico8-preview` writes a `game.lua` into the .love for
+  `conf.lua`; the preview player loads whichever `cart/*.p8` is in the .love.
+- `tools/pico8_env.lua` loads every `#include` except `main.lua` (mazing:
+  levels, rules; mossballs: board, rules, ai) instead of a hard-coded list;
+  `opts.globals` covers mossballs' `ai_tick` stub. Its `sub(s, i)` now
+  defaults to the end of the string like PICO-8 (it used to return one char;
+  no game relied on that).
+- `tests/run.lua` is gone: CI runs `make test`, and `make unit` runs every
+  `tests/test_*.lua` (mazing's `test_rules`, mossballs' `test_brain`).
+- `tools/scores.lua` returns `{ first_sfx, effects, songs }`; leaving
+  `effects` out keeps the cart's own sfx (mossballs). The music check now
+  requires a `music(n` call for every song's first pattern.
+- Agent notes: AGENTS.md is generic and template-managed; game notes go in a
+  game-owned `GAME.md`, and CLAUDE.md loads both.
+
 ## Steps
 
 ### 1. Make the shared files name-agnostic (in mazing)

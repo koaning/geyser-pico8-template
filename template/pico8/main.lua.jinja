@@ -1,0 +1,63 @@
+-- {{ title }}: walk the grid and grab as many gems as you can in 30 seconds.
+-- sprites: 1 you, 2 gem, 3 wall. sfx: 0 step, 1 gem, 2 bump.
+
+local W, H, CELL, OX, OY = 12, 12, 8, 16, 24
+local TIME = 30 * 60 -- frames
+
+local scene, st, left, best = "title", nil, 0, 0
+local dirs = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 } }
+local sounds = { step = 0, gem = 1, bump = 2 }
+
+cartdata("{{ cartdata_id }}")
+best = dget(0)
+music(0, 0, 3)
+
+function _update60()
+  if scene == "title" then
+    if btnp(4) or btnp(5) then
+      st, left, scene = rules_new(W, H), TIME, "play"
+    end
+    return
+  end
+  for b = 0, 3 do
+    if btnp(b) then
+      sfx(sounds[rules_move(st, dirs[b + 1][1], dirs[b + 1][2])])
+    end
+  end
+  left = left - 1
+  if left <= 0 then
+    if st.score > best then
+      best = st.score
+      dset(0, best)
+    end
+    scene = "title"
+  end
+end
+
+local function centre(s, y, c)
+  print(s, 64 - #s * 2, y, c)
+end
+
+function _draw()
+  cls(1)
+  if scene == "title" then
+    spr(2, 60, 36)
+    centre("{{ title | lower }}", 52, 7)
+    centre("grab the gems", 64, 6)
+    centre("press \142 to start", 84, 10)
+    if best > 0 then centre("best " .. best, 100, 9) end
+    return
+  end
+  for x = 0, W + 1 do
+    spr(3, OX + (x - 1) * CELL, OY - CELL)
+    spr(3, OX + (x - 1) * CELL, OY + H * CELL)
+  end
+  for y = 0, H - 1 do
+    spr(3, OX - CELL, OY + y * CELL)
+    spr(3, OX + W * CELL, OY + y * CELL)
+  end
+  spr(2, OX + (st.gx - 1) * CELL, OY + (st.gy - 1) * CELL)
+  spr(1, OX + (st.x - 1) * CELL, OY + (st.y - 1) * CELL)
+  print("gems " .. st.score, 8, 4, 7)
+  print("time " .. ceil(left / 60), 88, 4, left < 300 and 8 or 7)
+end
